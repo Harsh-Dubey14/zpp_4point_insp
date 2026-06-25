@@ -1,6 +1,175 @@
-<mvc:View controllerName="zpp4pointinsp.controller.View1"
+<mvc:View
+    controllerName="zpp4pointinsp.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+>
+    <Page
+        id="page"
+        title="4 Point Inspection Module - Zeel(Textile)"
+        showHeader="true"
+        showFooter="true"
+        busy="{vm>/busy}"
+        class="sapUiContentPadding"
+    >
+        <content>
+            <VBox class="sapUiResponsiveMargin">
+
+                <Panel headerText="Selection Screen" class="customPanel sapUiTinyMarginBottom">
+                    <f:SimpleForm
+                        editable="true"
+                        layout="ResponsiveGridLayout"
+                        labelSpanL="4"
+                        labelSpanM="4"
+                        emptySpanL="0"
+                        emptySpanM="0"
+                        columnsL="2"
+                        columnsM="2"
+                    >
+                        <f:content>
+                            <core:Title text="Order Information" />
+
+                            <Label text="Production Order" design="Bold" />
+                            <Input
+                                id="prodOrderInput"
+                                value="{vm>/selection/productionOrder}"
+                                change=".onProductionOrderChange"
+                                suggest=".onProductionOrderSuggest"
+                                suggestionItemSelected=".onProductionOrderSuggestionSelected"
+                                valueHelpRequest=".onProductionOrderValueHelp"
+                                showSuggestion="true"
+                                showValueHelp="true"
+                                filterSuggests="false"
+                                startSuggestion="1"
+                                suggestionRows="{vm>/productionOrders}"
+                                placeholder="Enter or select Production Order"
+                                width="100%"
+                            >
+                                <suggestionColumns>
+                                    <Column><Text text="Production Order" /></Column>
+                                    <Column><Text text="Product" /></Column>
+                                    <Column><Text text="Product Description" /></Column>
+                                    <Column><Text text="Sales Order" /></Column>
+                                    <Column><Text text="Item" /></Column>
+                                    <Column><Text text="UOM" /></Column>
+                                    <Column><Text text="Quantity" /></Column>
+                                </suggestionColumns>
+                                <suggestionRows>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{vm>Product_Order}" />
+                                            <Text text="{vm>Product}" />
+                                            <Text text="{vm>ProductDescription}" />
+                                            <Text text="{vm>SalesOrder}" />
+                                            <Text text="{vm>SalesOrderItem}" />
+                                            <Text text="{vm>Uom}" />
+                                            <Text text="{vm>Qty}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </suggestionRows>
+                            </Input>
+
+                            <Label text="Sales Order" design="Bold" />
+                            <Input value="{vm>/selection/salesOrder}" editable="false" width="100%" />
+
+                            <Label text="Sales Order Item" design="Bold" />
+                            <Input value="{vm>/selection/salesOrderItem}" editable="false" width="100%" />
+
+                            <Label text="Product" design="Bold" />
+                            <Input value="{vm>/selection/product}" editable="false" width="100%" />
+
+                            <Label text="Product Description" design="Bold" />
+                            <Input value="{vm>/selection/productDescription}" editable="false" width="100%" />
+
+                            <Label text="Quantity" design="Bold" />
+                            <Input value="{vm>/selection/quantity}" editable="false" width="100%" />
+
+                            <Label text="UOM" design="Bold" />
+                            <Input value="{vm>/selection/uom}" editable="false" width="100%" />
+
+                            <core:Title text="Process &amp; Measurement" />
+
+                            <Label text="Process" design="Bold" />
+                            <Select
+                                selectedKey="{vm>/selection/process}"
+                                items="{vm>/processes}"
+                                change=".onProcessChange"
+                                width="100%"
+                            >
+                                <core:Item key="{vm>key}" text="{vm>text}" />
+                            </Select>
+
+                            <Label text="Meter Reading" design="Bold" />
+                            <Input
+                                value="{vm>/selection/meterReading}"
+                                placeholder="Enter Current Meter Reading"
+                                type="Number"
+                                submit=".onMeterReadingSubmit"
+                                width="100%"
+                            />
+                        </f:content>
+                    </f:SimpleForm>
+                </Panel>
+
+                <Panel headerText="Defect Quick-Capture (Click button to record)" class="customPanel sapUiTinyMarginBottom">
+                    <l:Grid defaultSpan="XL3 L3 M4 S12" content="{vm>/currentDefects}">
+                        <Button
+                            text="{vm>name}"
+                            press=".onDefectClick"
+                            width="100%"
+                        />
+                    </l:Grid>
+                </Panel>
+
+                <Table
+                    id="defectsTable"
+                    items="{vm>/capturedDefects}"
+                    headerText="Captured Defects Log"
+                    noDataText="No defects captured yet."
+                >
+                    <columns>
+                        <Column><Text text="Defect Name" /></Column>
+                        <Column><Text text="Meter Reading" /></Column>
+                        <Column><Text text="Production Order" /></Column>
+                        <Column><Text text="Sales Order" /></Column>
+                        <Column><Text text="Item" /></Column>
+                        <Column><Text text="Product" /></Column>
+                        <Column><Text text="Quantity" /></Column>
+                        <Column><Text text="UOM" /></Column>
+                        <Column><Text text="Process" /></Column>
+                        <Column><Text text="Time" /></Column>
+                        <Column hAlign="Center"><Text text="Delete" /></Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{vm>defectName}" />
+                                <Text text="{vm>meterReading} m" />
+                                <Text text="{vm>productionOrder}" />
+                                <Text text="{vm>salesOrder}" />
+                                <Text text="{vm>salesOrderItem}" />
+                                <Text text="{vm>product}" />
+                                <Text text="{vm>quantity}" />
+                                <Text text="{vm>uom}" />
+                                <Text text="{vm>process}" />
+                                <Text text="{vm>timestamp}" />
+                                <Button icon="sap-icon://delete" press=".onDeleteDefect" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+            </VBox>
+        </content>
+
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="Submit Inspection Log" type="Accept" icon="sap-icon://accept" press=".onFinalSubmit" />
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>
