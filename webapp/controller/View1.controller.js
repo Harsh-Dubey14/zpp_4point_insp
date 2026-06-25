@@ -26,22 +26,20 @@ sap.ui.define([
     return Controller.extend("zpp4pointinsp.controller.View1", {
 
         onInit: function () {
-            this._oDefectsMap = this._getDefectsMap();
-
             var oViewModel = new JSONModel({
                 busy: false,
+
                 productionOrders: [],
-                processes: [
-                    { key: "weaving", text: "Weaving" },
-                    { key: "process", text: "Process" },
-                    { key: "cire", text: "Cire" },
-                    { key: "tpu", text: "TPU" },
-                    { key: "pur", text: "PUR" },
-                    { key: "glue_machine", text: "Glue Machine" },
-                    { key: "calendar", text: "Calendar" }
-                ],
-                currentDefects: this._oDefectsMap.weaving,
+
+                // Will come from backend Process endpoint
+                processes: [],
+
+                // Will come from backend Defect endpoint
+                allDefects: [],
+                currentDefects: [],
+
                 capturedDefects: [],
+
                 selection: {
                     productionOrder: "",
                     salesOrder: "",
@@ -50,21 +48,131 @@ sap.ui.define([
                     productDescription: "",
                     quantity: "",
                     uom: "",
-                    process: "weaving",
+                    netWeight: "",
+                    grossWeight: "",
+                    tareWeight: "",
+
+                    // ProcessID UUID will be stored here
+                    process: "",
+                    processName: "",
+
                     meterReading: ""
                 }
             });
 
-            oViewModel.setSizeLimit(1000);
+            oViewModel.setSizeLimit(5000);
             this.getView().setModel(oViewModel, "vm");
+
             this._loadProductionOrders();
+            this._loadProcessAndDefectMaster();
+        },
+
+        _getServiceUrl: function () {
+            var oSapApp = this.getOwnerComponent().getManifestEntry("sap.app");
+            var sServiceUrl = oSapApp.dataSources.mainService.uri;
+
+            return sServiceUrl.replace(/\/?$/, "/");
+        },
+
+        _readEndpoint: function (sEndpoint, sQuery) {
+            var sRequestUrl = this._getServiceUrl() + sEndpoint;
+
+            if (sQuery) {
+                sRequestUrl += "?" + sQuery;
+            }
+
+            return fetch(sRequestUrl, {
+                method: "GET",
+                credentials: "same-origin",
+                cache: "no-store",
+                headers: {
+                    Accept: "application/json"
+                }
+            }).then(function (oResponse) {
+                if (!oResponse.ok) {
+                    throw new Error(oResponse.status + " " + oResponse.statusText);
+                }
+
+                return oResponse.json();
+            });
+        },
+
+        _toArray: function (oResponseData) {
+            return Array.isArray(oResponseData) ?
+                oResponseData :
+                (
+                    oResponseData.value ||
+                    (oResponseData.d && oResponseData.d.results) ||
+                    []
+                );
+        },
+
+        _loadProcessAndDefectMaster: function () {
+            var oViewModel = this.getView().getModel("vm");
+
+            oViewModel.setProperty("/busy", true);
+
+            Promise.all([
+                this._readEndpoint("Process", "$top=5000"),
+                this._readEndpoint("Defect", "$top=5000")
+            ])
+                .then(function (aResponses) {
+                    var aProcessResponse = this._toArray(aResponses[0]);
+                    var aDefectResponse = this._toArray(aResponses[1]);
+
+                    var aProcesses = aProcessResponse.map(function (oItem) {
+                        return {
+                            key: oItem.ProcessID,
+                            text: oItem.ProcessName
+                        };
+                    });
+
+                    var aDefects = aDefectResponse.map(function (oItem) {
+                        return {
+                            processId: oItem.ProcessID,
+                            defectCode: oItem.DefectCode,
+                            processName: oItem.ProcessName,
+                            name: oItem.DefectName
+                        };
+                    });
+
+                    oViewModel.setProperty("/processes", aProcesses);
+                    oViewModel.setProperty("/allDefects", aDefects);
+
+                    if (aProcesses.length > 0) {
+                        var oFirstProcess = aProcesses[0];
+
+                        oViewModel.setProperty("/selection/process", oFirstProcess.key);
+                        oViewModel.setProperty("/selection/processName", oFirstProcess.text);
+
+                        this._setCurrentDefectsByProcess(oFirstProcess.key);
+                    }
+                }.bind(this))
+                .catch(function (oError) {
+                    MessageBox.error(
+                        "Unable to load Process / Defect master data.\n\n" +
+                        (oError.message || "Please check Process and Defect endpoints.")
+                    );
+                })
+                .finally(function () {
+                    oViewModel.setProperty("/busy", false);
+                });
+        },
+
+        _setCurrentDefectsByProcess: function (sProcessId) {
+            var oViewModel = this.getView().getModel("vm");
+            var aAllDefects = oViewModel.getProperty("/allDefects") || [];
+
+            var aCurrentDefects = aAllDefects.filter(function (oDefect) {
+                return String(oDefect.processId) === String(sProcessId);
+            });
+
+            oViewModel.setProperty("/currentDefects", aCurrentDefects);
         },
 
         _loadProductionOrders: function () {
             var oViewModel = this.getView().getModel("vm");
-            var oSapApp = this.getOwnerComponent().getManifestEntry("sap.app");
-            var sServiceUrl = oSapApp.dataSources.mainService.uri;
-            var sRequestUrl = sServiceUrl.replace(/\/?$/, "/") + "productordvh?$top=1000";
+            var sRequestUrl = this._getServiceUrl() + "productordvh?$top=1000";
 
             oViewModel.setProperty("/busy", true);
 
@@ -86,9 +194,11 @@ sap.ui.define([
                 .then(function (oResponseData) {
                     var aProductionOrders = Array.isArray(oResponseData) ?
                         oResponseData :
-                        (oResponseData.value ||
+                        (
+                            oResponseData.value ||
                             (oResponseData.d && oResponseData.d.results) ||
-                            []);
+                            []
+                        );
 
                     oViewModel.setProperty("/productionOrders", aProductionOrders);
                 })
@@ -148,12 +258,8 @@ sap.ui.define([
                     confirm: this.onProductionOrderValueHelpConfirm.bind(this),
                     columns: [
                         new Column({ header: new Text({ text: "Production Order" }) }),
-                        new Column({ header: new Text({ text: "Product" }) }),
-                        new Column({ header: new Text({ text: "Product Description" }) }),
                         new Column({ header: new Text({ text: "Sales Order" }) }),
-                        new Column({ header: new Text({ text: "Sales Order Item" }) }),
-                        new Column({ header: new Text({ text: "UOM" }) }),
-                        new Column({ header: new Text({ text: "Quantity" }) })
+                        new Column({ header: new Text({ text: "Item" }) })
                     ]
                 });
 
@@ -162,12 +268,8 @@ sap.ui.define([
                     template: new ColumnListItem({
                         cells: [
                             new Text({ text: "{vm>Product_Order}" }),
-                            new Text({ text: "{vm>Product}" }),
-                            new Text({ text: "{vm>ProductDescription}" }),
                             new Text({ text: "{vm>SalesOrder}" }),
-                            new Text({ text: "{vm>SalesOrderItem}" }),
-                            new Text({ text: "{vm>Uom}" }),
-                            new Text({ text: "{vm>Qty}" })
+                            new Text({ text: "{vm>SalesOrderItem}" })
                         ]
                     })
                 });
@@ -208,6 +310,7 @@ sap.ui.define([
                 new Filter("SalesOrderItem", FilterOperator.Contains, sValue),
                 new Filter("Uom", FilterOperator.Contains, sValue)
             ];
+
             var fQuantity = Number(sValue);
 
             if (Number.isFinite(fQuantity)) {
@@ -228,10 +331,12 @@ sap.ui.define([
             oViewModel.setProperty("/selection/salesOrderItem", oSelected.SalesOrderItem || "");
             oViewModel.setProperty("/selection/product", oSelected.Product || "");
             oViewModel.setProperty("/selection/productDescription", oSelected.ProductDescription || "");
+
             oViewModel.setProperty(
                 "/selection/quantity",
                 oSelected.Qty === null || oSelected.Qty === undefined ? "" : String(oSelected.Qty)
             );
+
             oViewModel.setProperty("/selection/uom", oSelected.Uom || "");
         },
 
@@ -248,11 +353,21 @@ sap.ui.define([
         },
 
         onProcessChange: function (oEvent) {
-            var sProcessKey = oEvent.getSource().getSelectedKey();
-            var aDefects = this._oDefectsMap[sProcessKey] || [];
+            var sProcessId = oEvent.getSource().getSelectedKey();
+            var oViewModel = this.getView().getModel("vm");
+            var aProcesses = oViewModel.getProperty("/processes") || [];
 
-            this.getView().getModel("vm").setProperty("/selection/process", sProcessKey);
-            this.getView().getModel("vm").setProperty("/currentDefects", aDefects);
+            var oSelectedProcess = aProcesses.find(function (oProcess) {
+                return String(oProcess.key) === String(sProcessId);
+            });
+
+            oViewModel.setProperty("/selection/process", sProcessId);
+            oViewModel.setProperty(
+                "/selection/processName",
+                oSelectedProcess ? oSelectedProcess.text : ""
+            );
+
+            this._setCurrentDefectsByProcess(sProcessId);
         },
 
         onMeterReadingSubmit: function (oEvent) {
@@ -284,6 +399,11 @@ sap.ui.define([
                 return;
             }
 
+            if (!oSelection.process) {
+                MessageToast.show("Please select Process first.");
+                return;
+            }
+
             if (!oSelection.meterReading) {
                 MessageToast.show("Please enter Meter Reading first.");
                 return;
@@ -296,18 +416,28 @@ sap.ui.define([
                 return;
             }
 
+            var oDefectContext = oEvent.getSource().getBindingContext("vm");
+            var oDefect = oDefectContext ? oDefectContext.getObject() : {};
+
             var aCapturedDefects = (oViewModel.getProperty("/capturedDefects") || []).slice();
 
             aCapturedDefects.push({
-                defectName: oEvent.getSource().getText(),
+                defectCode: oDefect.defectCode || "",
+                defectName: oDefect.name || oEvent.getSource().getText(),
+
                 meterReading: fMeterReading.toFixed(2),
+
                 productionOrder: oSelection.productionOrder,
                 salesOrder: oSelection.salesOrder,
                 salesOrderItem: oSelection.salesOrderItem,
                 product: oSelection.product,
+                productDescription: oSelection.productDescription,
                 quantity: oSelection.quantity,
                 uom: oSelection.uom,
+
                 process: oSelection.process,
+                processName: oSelection.processName || oDefect.processName || "",
+
                 timestamp: new Date().toLocaleString()
             });
 
@@ -349,86 +479,6 @@ sap.ui.define([
                     title: "Submission Not Configured"
                 }
             );
-        },
-
-        _getDefectsMap: function () {
-            return {
-                weaving: [
-                    { name: "Weft Cut" },
-                    { name: "Jhiri" },
-                    { name: "Cheera" },
-                    { name: "Chappa" },
-                    { name: "Loom Dagi" },
-                    { name: "Design Cut" },
-                    { name: "Tight End" },
-                    { name: "Tight Pick" },
-                    { name: "Float" },
-                    { name: "Loose Pick" },
-                    { name: "Weft Patta" },
-                    { name: "Weft Line" },
-                    { name: "Warp Patta" },
-                    { name: "Warp Line" },
-                    { name: "Un Texture" },
-                    { name: "Wrong Design" },
-                    { name: "Repture" },
-                    { name: "Section Wise Line" },
-                    { name: "Yarn Line" },
-                    { name: "Double Pick" },
-                    { name: "Fabric Hole" },
-                    { name: "Slippage" },
-                    { name: "Yarn Breakge" },
-                    { name: "Stop Line" }
-                ],
-                process: [
-                    { name: "PH Colour Stain" },
-                    { name: "PH Oil Stain" },
-                    { name: "PH Fabric Crease" },
-                    { name: "Selvedge Loose" },
-                    { name: "Stenter Pin Out" },
-                    { name: "Bow/Skew" },
-                    { name: "Abrasion" },
-                    { name: "Moyar" },
-                    { name: "Jet Mark" }
-                ],
-                cire: [
-                    { name: "Fabric Crease (Chunnat)" },
-                    { name: "Cire Stain" },
-                    { name: "Cire Fabric Shine" }
-                ],
-                tpu: [
-                    { name: "TPU Glue Stain" },
-                    { name: "TPU Fabric Crease" },
-                    { name: "TPU Film Crease" },
-                    { name: "TPU Air Bubble" }
-                ],
-                pur: [
-                    { name: "PUR Stain" },
-                    { name: "PUR Fabric Crease" },
-                    { name: "PRU Film Crease" },
-                    { name: "PUR Air Bubble" }
-                ],
-                "glue_machine": [
-                    { name: "Glue Stain" },
-                    { name: "Fabric Crease (Chunnat)" },
-                    { name: "GSM Hole" },
-                    { name: "PA Line/Stain" },
-                    { name: "PU Line/Stain" }
-                ],
-                calendar: [
-                    { name: "Pin Hole" },
-                    { name: "Cal Fab.Crease (Chunnat)" },
-                    { name: "Cal.Colour Stain" },
-                    { name: "Cal.Oil Stain" },
-                    { name: "GSM Hole" },
-                    { name: "High GSM" },
-                    { name: "Low GSM" },
-                    { name: "High Guage" },
-                    { name: "Low Guage" },
-                    { name: "PVC Out" },
-                    { name: "PVC Lump" },
-                    { name: "Water Pressure Fail" }
-                ]
-            };
         }
     });
 });

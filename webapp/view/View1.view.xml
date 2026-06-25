@@ -18,99 +18,145 @@
             <VBox class="sapUiResponsiveMargin">
 
                 <Panel headerText="Selection Screen" class="customPanel sapUiTinyMarginBottom">
-                    <f:SimpleForm
-                        editable="true"
-                        layout="ResponsiveGridLayout"
-                        labelSpanL="4"
-                        labelSpanM="4"
-                        emptySpanL="0"
-                        emptySpanM="0"
-                        columnsL="2"
-                        columnsM="2"
-                    >
-                        <f:content>
-                            <core:Title text="Order Information" />
+                    <l:Grid defaultSpan="XL4 L4 M6 S12" hSpacing="1" vSpacing="1">
+                        <f:SimpleForm
+                            editable="true"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="5"
+                            labelSpanL="5"
+                            labelSpanM="5"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="1"
+                            columnsL="1"
+                            columnsM="1"
+                        >
+                            <f:content>
+                                <core:Title text="Order Information" />
 
-                            <Label text="Production Order" design="Bold" />
-                            <Input
-                                id="prodOrderInput"
-                                value="{vm>/selection/productionOrder}"
-                                change=".onProductionOrderChange"
-                                suggest=".onProductionOrderSuggest"
-                                suggestionItemSelected=".onProductionOrderSuggestionSelected"
-                                valueHelpRequest=".onProductionOrderValueHelp"
-                                showSuggestion="true"
-                                showValueHelp="true"
-                                filterSuggests="false"
-                                startSuggestion="1"
-                                suggestionRows="{vm>/productionOrders}"
-                                placeholder="Enter or select Production Order"
-                                width="100%"
-                            >
-                                <suggestionColumns>
-                                    <Column><Text text="Production Order" /></Column>
-                                    <Column><Text text="Product" /></Column>
-                                    <Column><Text text="Product Description" /></Column>
-                                    <Column><Text text="Sales Order" /></Column>
-                                    <Column><Text text="Item" /></Column>
-                                    <Column><Text text="UOM" /></Column>
-                                    <Column><Text text="Quantity" /></Column>
-                                </suggestionColumns>
-                                <suggestionRows>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <Text text="{vm>Product_Order}" />
-                                            <Text text="{vm>Product}" />
-                                            <Text text="{vm>ProductDescription}" />
-                                            <Text text="{vm>SalesOrder}" />
-                                            <Text text="{vm>SalesOrderItem}" />
-                                            <Text text="{vm>Uom}" />
-                                            <Text text="{vm>Qty}" />
-                                        </cells>
-                                    </ColumnListItem>
-                                </suggestionRows>
-                            </Input>
+                                <Label text="Production Order" design="Bold" />
+                                <Input
+                                    id="prodOrderInput"
+                                    value="{vm>/selection/productionOrder}"
+                                    change=".onProductionOrderChange"
+                                    suggest=".onProductionOrderSuggest"
+                                    suggestionItemSelected=".onProductionOrderSuggestionSelected"
+                                    valueHelpRequest=".onProductionOrderValueHelp"
+                                    showSuggestion="true"
+                                    showValueHelp="true"
+                                    filterSuggests="false"
+                                    startSuggestion="1"
+                                    suggestionRows="{vm>/productionOrders}"
+                                    placeholder="Enter or select Production Order"
+                                    width="100%"
+                                >
+                                    <suggestionColumns>
+                                        <Column><Text text="Production Order" /></Column>
+                                        <Column><Text text="Sales Order" /></Column>
+                                        <Column><Text text="Item" /></Column>
+                                    </suggestionColumns>
+                                    <suggestionRows>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{vm>Product_Order}" />
+                                                <Text text="{vm>SalesOrder}" />
+                                                <Text text="{vm>SalesOrderItem}" />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </suggestionRows>
+                                </Input>
 
-                            <Label text="Sales Order" design="Bold" />
-                            <Input value="{vm>/selection/salesOrder}" editable="false" width="100%" />
+                                <Label text="Sales Order" design="Bold" />
+                                <Input value="{vm>/selection/salesOrder}" editable="false" width="100%" />
 
-                            <Label text="Sales Order Item" design="Bold" />
-                            <Input value="{vm>/selection/salesOrderItem}" editable="false" width="100%" />
+                                <Label text="Sales Order Item" design="Bold" />
+                                <Input value="{vm>/selection/salesOrderItem}" editable="false" width="100%" />
 
-                            <Label text="Product" design="Bold" />
-                            <Input value="{vm>/selection/product}" editable="false" width="100%" />
+                                <Label text="Product" design="Bold" />
+                                <Input value="{vm>/selection/product}" editable="false" width="100%" />
 
-                            <Label text="Product Description" design="Bold" />
-                            <Input value="{vm>/selection/productDescription}" editable="false" width="100%" />
+                                <Label text="Product Description" design="Bold" />
+                                <Input value="{vm>/selection/productDescription}" editable="false" width="100%" />
 
-                            <Label text="Quantity" design="Bold" />
-                            <Input value="{vm>/selection/quantity}" editable="false" width="100%" />
+                                <Label text="Quantity" design="Bold" />
+                                <Input value="{vm>/selection/quantity}" editable="false" width="100%" />
 
-                            <Label text="UOM" design="Bold" />
-                            <Input value="{vm>/selection/uom}" editable="false" width="100%" />
+                                <Label text="UOM" design="Bold" />
+                                <Input value="{vm>/selection/uom}" editable="false" width="100%" />
+                            </f:content>
+                        </f:SimpleForm>
 
-                            <core:Title text="Process &amp; Measurement" />
+                        <f:SimpleForm
+                            editable="true"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="4"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="1"
+                            columnsL="1"
+                            columnsM="1"
+                        >
+                            <f:content>
+                                <core:Title text="Weights" />
 
-                            <Label text="Process" design="Bold" />
-                            <Select
-                                selectedKey="{vm>/selection/process}"
-                                items="{vm>/processes}"
-                                change=".onProcessChange"
-                                width="100%"
-                            >
-                                <core:Item key="{vm>key}" text="{vm>text}" />
-                            </Select>
+                                <Label text="N.WT" design="Bold" />
+                                <Input value="{vm>/selection/netWeight}" type="Number" placeholder="Enter Net Weight" width="100%" />
 
-                            <Label text="Meter Reading" design="Bold" />
-                            <Input
-                                value="{vm>/selection/meterReading}"
-                                placeholder="Enter Current Meter Reading"
-                                type="Number"
-                                submit=".onMeterReadingSubmit"
-                                width="100%"
-                            />
-                        </f:content>
-                    </f:SimpleForm>
+                                <Label text="G.WT" design="Bold" />
+                                <Input value="{vm>/selection/grossWeight}" type="Number" placeholder="Enter Gross Weight" width="100%" />
+
+                                <Label text="T.WT" design="Bold" />
+                                <Input value="{vm>/selection/tareWeight}" type="Number" placeholder="Enter Tare Weight" width="100%" />
+                            </f:content>
+                        </f:SimpleForm>
+
+                        <f:SimpleForm
+                            editable="true"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="5"
+                            labelSpanL="5"
+                            labelSpanM="5"
+                            labelSpanS="12"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="1"
+                            columnsL="1"
+                            columnsM="1"
+                        >
+                            <f:content>
+                                <core:Title text="Process &amp; Measurement" />
+
+                                <Label text="Process" design="Bold" />
+                                <Select
+                                    selectedKey="{vm>/selection/process}"
+                                    items="{vm>/processes}"
+                                    change=".onProcessChange"
+                                    width="100%"
+                                >
+                                    <core:Item key="{vm>key}" text="{vm>text}" />
+                                </Select>
+
+                                <Label text="Meter Reading" design="Bold" />
+                                <Input
+                                    value="{vm>/selection/meterReading}"
+                                    placeholder="Enter Current Meter Reading"
+                                    type="Number"
+                                    submit=".onMeterReadingSubmit"
+                                    width="100%"
+                                />
+                            </f:content>
+                        </f:SimpleForm>
+                    </l:Grid>
                 </Panel>
 
                 <Panel headerText="Defect Quick-Capture (Click button to record)" class="customPanel sapUiTinyMarginBottom">
@@ -132,12 +178,6 @@
                     <columns>
                         <Column><Text text="Defect Name" /></Column>
                         <Column><Text text="Meter Reading" /></Column>
-                        <Column><Text text="Production Order" /></Column>
-                        <Column><Text text="Sales Order" /></Column>
-                        <Column><Text text="Item" /></Column>
-                        <Column><Text text="Product" /></Column>
-                        <Column><Text text="Quantity" /></Column>
-                        <Column><Text text="UOM" /></Column>
                         <Column><Text text="Process" /></Column>
                         <Column><Text text="Time" /></Column>
                         <Column hAlign="Center"><Text text="Delete" /></Column>
@@ -148,12 +188,6 @@
                             <cells>
                                 <ObjectIdentifier title="{vm>defectName}" />
                                 <Text text="{vm>meterReading} m" />
-                                <Text text="{vm>productionOrder}" />
-                                <Text text="{vm>salesOrder}" />
-                                <Text text="{vm>salesOrderItem}" />
-                                <Text text="{vm>product}" />
-                                <Text text="{vm>quantity}" />
-                                <Text text="{vm>uom}" />
                                 <Text text="{vm>process}" />
                                 <Text text="{vm>timestamp}" />
                                 <Button icon="sap-icon://delete" press=".onDeleteDefect" />
