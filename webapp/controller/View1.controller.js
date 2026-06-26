@@ -31,6 +31,24 @@ sap.ui.define([
 
                 productionOrders: [],
 
+                operators: [
+                    { key: "", text: "Select Operator" }
+                ],
+
+                machines: [
+                    { key: "", text: "Select Machine" }
+                ],
+
+                storageLocations: [
+                    { key: "1226", text: "1226" },
+                    { key: "1227", text: "1227" }
+                ],
+
+                shifts: [
+                    { key: "A", text: "A" },
+                    { key: "B", text: "B" }
+                ],
+
                 // Will come from backend Process endpoint
                 processes: [],
 
@@ -48,6 +66,11 @@ sap.ui.define([
                     productDescription: "",
                     quantity: "",
                     uom: "",
+                    fromStorageLocation: "1225",
+                    toStorageLocation: "1226",
+                    shift: "A",
+                    inspectedQuantity: "",
+                    inspectedUom: "",
                     netWeight: "",
                     grossWeight: "",
                     tareWeight: "",
@@ -56,7 +79,9 @@ sap.ui.define([
                     process: "",
                     processName: "",
 
-                    meterReading: ""
+                    meterReading: "",
+                    operator: "",
+                    machineName: ""
                 }
             });
 
@@ -65,6 +90,7 @@ sap.ui.define([
 
             this._loadProductionOrders();
             this._loadProcessAndDefectMaster();
+            this._loadOperatorAndMachineMaster();
         },
 
         _getServiceUrl: function () {
@@ -152,6 +178,53 @@ sap.ui.define([
                     MessageBox.error(
                         "Unable to load Process / Defect master data.\n\n" +
                         (oError.message || "Please check Process and Defect endpoints.")
+                    );
+                })
+                .finally(function () {
+                    oViewModel.setProperty("/busy", false);
+                });
+        },
+
+        _loadOperatorAndMachineMaster: function () {
+            var oViewModel = this.getView().getModel("vm");
+
+            oViewModel.setProperty("/busy", true);
+
+            Promise.all([
+                this._readEndpoint("operator_name", "$top=5000"),
+                this._readEndpoint("Machine_name", "$top=5000")
+            ])
+                .then(function (aResponses) {
+                    var aOperatorResponse = this._toArray(aResponses[0]);
+                    var aMachineResponse = this._toArray(aResponses[1]);
+
+                    var aOperators = [{
+                        key: "",
+                        text: "Select Operator"
+                    }].concat(aOperatorResponse.map(function (oItem) {
+                        return {
+                            key: oItem.OperatorName,
+                            text: oItem.OperatorName
+                        };
+                    }));
+
+                    var aMachines = [{
+                        key: "",
+                        text: "Select Machine"
+                    }].concat(aMachineResponse.map(function (oItem) {
+                        return {
+                            key: oItem.MachineName,
+                            text: oItem.MachineName
+                        };
+                    }));
+
+                    oViewModel.setProperty("/operators", aOperators);
+                    oViewModel.setProperty("/machines", aMachines);
+                }.bind(this))
+                .catch(function (oError) {
+                    MessageBox.error(
+                        "Unable to load Operator / Machine master data.\n\n" +
+                        (oError.message || "Please check operator_name and Machine_name endpoints.")
                     );
                 })
                 .finally(function () {
@@ -254,6 +327,9 @@ sap.ui.define([
                 this._oProductionOrderDialog = new TableSelectDialog({
                     title: "Select Production Order",
                     noDataText: "No production orders found",
+                    contentWidth: "55rem",
+                    contentHeight: "32rem",
+                    stretchOnPhone: true,
                     search: this.onProductionOrderValueHelpSearch.bind(this),
                     confirm: this.onProductionOrderValueHelpConfirm.bind(this),
                     columns: [
@@ -370,6 +446,31 @@ sap.ui.define([
             this._setCurrentDefectsByProcess(sProcessId);
         },
 
+        onWeightChange: function (oEvent) {
+            var oViewModel = this.getView().getModel("vm");
+            var oSource = oEvent && oEvent.getSource();
+            var oValueBinding = oSource && oSource.getBinding("value");
+
+            if (oValueBinding) {
+                oViewModel.setProperty(oValueBinding.getPath(), oEvent.getParameter("value"));
+            }
+
+            var sGrossWeight = oViewModel.getProperty("/selection/grossWeight");
+            var sTareWeight = oViewModel.getProperty("/selection/tareWeight");
+            var fGrossWeight = Number(sGrossWeight);
+            var fTareWeight = Number(sTareWeight);
+
+            if (sGrossWeight === "" || sTareWeight === "" || !Number.isFinite(fGrossWeight) || !Number.isFinite(fTareWeight)) {
+                oViewModel.setProperty("/selection/netWeight", "");
+                return;
+            }
+
+            oViewModel.setProperty(
+                "/selection/netWeight",
+                (fGrossWeight - fTareWeight).toFixed(3)
+            );
+        },
+
         onMeterReadingSubmit: function (oEvent) {
             var sValue = oEvent.getParameter("value");
             var fMeterReading = Number(sValue);
@@ -409,6 +510,16 @@ sap.ui.define([
                 return;
             }
 
+            if (!oSelection.operator) {
+                MessageToast.show("Please select Operator first.");
+                return;
+            }
+
+            if (!oSelection.machineName) {
+                MessageToast.show("Please select Machine Name first.");
+                return;
+            }
+
             var fMeterReading = Number(oSelection.meterReading);
 
             if (!Number.isFinite(fMeterReading) || fMeterReading < 0) {
@@ -434,6 +545,16 @@ sap.ui.define([
                 productDescription: oSelection.productDescription,
                 quantity: oSelection.quantity,
                 uom: oSelection.uom,
+                fromStorageLocation: oSelection.fromStorageLocation,
+                toStorageLocation: oSelection.toStorageLocation,
+                shift: oSelection.shift,
+                inspectedQuantity: oSelection.inspectedQuantity,
+                inspectedUom: oSelection.inspectedUom,
+                netWeight: oSelection.netWeight,
+                grossWeight: oSelection.grossWeight,
+                tareWeight: oSelection.tareWeight,
+                operator: oSelection.operator,
+                machineName: oSelection.machineName,
 
                 process: oSelection.process,
                 processName: oSelection.processName || oDefect.processName || "",
@@ -462,6 +583,40 @@ sap.ui.define([
                 aCapturedDefects.splice(iIndex, 1);
                 oViewModel.setProperty("/capturedDefects", aCapturedDefects);
             }
+        },
+
+        onCancel: function () {
+            var oViewModel = this.getView().getModel("vm");
+            var aProcesses = oViewModel.getProperty("/processes") || [];
+            var oDefaultProcess = aProcesses[0] || {};
+
+            oViewModel.setProperty("/selection", {
+                productionOrder: "",
+                salesOrder: "",
+                salesOrderItem: "",
+                product: "",
+                productDescription: "",
+                quantity: "",
+                uom: "",
+                fromStorageLocation: "1225",
+                toStorageLocation: "1226",
+                shift: "A",
+                inspectedQuantity: "",
+                inspectedUom: "",
+                netWeight: "",
+                grossWeight: "",
+                tareWeight: "",
+                process: oDefaultProcess.key || "",
+                processName: oDefaultProcess.text || "",
+                meterReading: "",
+                operator: "",
+                machineName: ""
+            });
+
+            oViewModel.setProperty("/capturedDefects", []);
+            this._setCurrentDefectsByProcess(oDefaultProcess.key || "");
+
+            MessageToast.show("Inspection entry reset.");
         },
 
         onFinalSubmit: function () {

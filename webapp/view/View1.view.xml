@@ -35,8 +35,6 @@
                             columnsM="1"
                         >
                             <f:content>
-                                <core:Title text="Order Information" />
-
                                 <Label text="Production Order" design="Bold" />
                                 <Input
                                     id="prodOrderInput"
@@ -69,23 +67,110 @@
                                     </suggestionRows>
                                 </Input>
 
-                                <Label text="Sales Order" design="Bold" />
-                                <Input value="{vm>/selection/salesOrder}" editable="false" width="100%" />
+                               <Label  />
+<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
+    <VBox width="49%">
+        <Label text="Sales Order" design="Bold" />
+        <Input
+            value="{vm>/selection/salesOrder}"
+            editable="false"
+            width="100%"
+        />
+    </VBox>
 
-                                <Label text="Sales Order Item" design="Bold" />
-                                <Input value="{vm>/selection/salesOrderItem}" editable="false" width="100%" />
-
+    <VBox width="49%">
+        <Label text="Sales Order Item" design="Bold" />
+        <Input
+            value="{vm>/selection/salesOrderItem}"
+            editable="false"
+            width="100%"
+        />
+    </VBox>
+</HBox>
                                 <Label text="Product" design="Bold" />
                                 <Input value="{vm>/selection/product}" editable="false" width="100%" />
 
-                                <Label text="Product Description" design="Bold" />
-                                <Input value="{vm>/selection/productDescription}" editable="false" width="100%" />
+                                <!-- <Label text="Product Description" design="Bold" />
+                                <Input value="{vm>/selection/productDescription}" editable="false" width="100%" /> -->
 
-                                <Label text="Quantity" design="Bold" />
-                                <Input value="{vm>/selection/quantity}" editable="false" width="100%" />
+                               <Label  />
+<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
+    <VBox width="49%">
+        <Label text="Quantity" design="Bold" />
+        <Input
+            value="{vm>/selection/quantity}"
+            editable="false"
+            width="100%"
+        />
+    </VBox>
 
-                                <Label text="UOM" design="Bold" />
-                                <Input value="{vm>/selection/uom}" editable="false" width="100%" />
+    <VBox width="49%">
+        <Label text="UOM" design="Bold" />
+        <Input
+            value="{vm>/selection/uom}"
+            editable="false"
+            width="100%"
+        />
+    </VBox>
+</HBox>
+                                <Label  />
+<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
+    <VBox width="49%">
+        <Label text="From Storage Location" design="Bold" />
+        <Input
+            value="{vm>/selection/fromStorageLocation}"
+            editable="false"
+            width="100%"
+        />
+    </VBox>
+
+    <VBox width="49%">
+        <Label text="To Storage Location" design="Bold" />
+        <Select
+            selectedKey="{vm>/selection/toStorageLocation}"
+            items="{vm>/storageLocations}"
+            width="100%"
+        >
+            <core:Item key="{vm>key}" text="{vm>text}" />
+        </Select>
+    </VBox>
+</HBox>
+
+                                <Label  />
+<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
+    <VBox width="49%">
+        <Label text="Shift" design="Bold" />
+        <Select
+            selectedKey="{vm>/selection/shift}"
+            items="{vm>/shifts}"
+            width="100%"
+        >
+            <core:Item key="{vm>key}" text="{vm>text}" />
+        </Select>
+    </VBox>
+</HBox>
+
+                                <Label  />
+<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
+    <VBox width="49%">
+        <Label text="Inspected Qty" design="Bold" />
+        <Input
+            value="{vm>/selection/inspectedQuantity}"
+            type="Number"
+            placeholder="Enter Quantity"
+            width="100%"
+        />
+    </VBox>
+
+    <VBox width="49%">
+        <Label text="Inspected UOM" design="Bold" />
+        <Input
+            value="{vm>/selection/inspectedUom}"
+            placeholder="Enter UOM"
+            width="100%"
+        />
+    </VBox>
+</HBox>
                             </f:content>
                         </f:SimpleForm>
 
@@ -105,16 +190,14 @@
                             columnsM="1"
                         >
                             <f:content>
-                                <core:Title text="Weights" />
-
                                 <Label text="N.WT" design="Bold" />
-                                <Input value="{vm>/selection/netWeight}" type="Number" placeholder="Enter Net Weight" width="100%" />
+                                <Input value="{vm>/selection/netWeight}" type="Number" editable="false" placeholder="Calculated Net Weight" width="100%" />
 
                                 <Label text="G.WT" design="Bold" />
-                                <Input value="{vm>/selection/grossWeight}" type="Number" placeholder="Enter Gross Weight" width="100%" />
+                                <Input value="{vm>/selection/grossWeight}" type="Number" placeholder="Enter Gross Weight" liveChange=".onWeightChange" change=".onWeightChange" width="100%" />
 
                                 <Label text="T.WT" design="Bold" />
-                                <Input value="{vm>/selection/tareWeight}" type="Number" placeholder="Enter Tare Weight" width="100%" />
+                                <Input value="{vm>/selection/tareWeight}" type="Number" placeholder="Enter Tare Weight" liveChange=".onWeightChange" change=".onWeightChange" width="100%" />
                             </f:content>
                         </f:SimpleForm>
 
@@ -134,8 +217,6 @@
                             columnsM="1"
                         >
                             <f:content>
-                                <core:Title text="Process &amp; Measurement" />
-
                                 <Label text="Process" design="Bold" />
                                 <Select
                                     selectedKey="{vm>/selection/process}"
@@ -154,6 +235,24 @@
                                     submit=".onMeterReadingSubmit"
                                     width="100%"
                                 />
+
+                                <Label text="Operator" design="Bold" />
+                                <Select
+                                    selectedKey="{vm>/selection/operator}"
+                                    items="{vm>/operators}"
+                                    width="100%"
+                                >
+                                    <core:Item key="{vm>key}" text="{vm>text}" />
+                                </Select>
+
+                                <Label text="Machine Name" design="Bold" />
+                                <Select
+                                    selectedKey="{vm>/selection/machineName}"
+                                    items="{vm>/machines}"
+                                    width="100%"
+                                >
+                                    <core:Item key="{vm>key}" text="{vm>text}" />
+                                </Select>
                             </f:content>
                         </f:SimpleForm>
                     </l:Grid>
@@ -176,6 +275,10 @@
                     noDataText="No defects captured yet."
                 >
                     <columns>
+                      <!-- <Column><Text text="Roll No" /></Column> -->
+                        <Column><Text text="Operator" /></Column>
+                          <Column><Text text="Machine Name" /></Column>
+                            <!-- <Column><Text text="Batch No" /></Column> -->
                         <Column><Text text="Defect Name" /></Column>
                         <Column><Text text="Meter Reading" /></Column>
                         <Column><Text text="Process" /></Column>
@@ -186,9 +289,13 @@
                     <items>
                         <ColumnListItem>
                             <cells>
+                                <!-- <ObjectIdentifier title="{vm>rollNo}" /> -->
+                                <Text text="{vm>operator}" />
+                                <Text text="{vm>machineName}" />
+                                <!-- <Text text="{vm>batchNo}" /> -->
                                 <ObjectIdentifier title="{vm>defectName}" />
                                 <Text text="{vm>meterReading} m" />
-                                <Text text="{vm>process}" />
+                                <Text text="{vm>processName}" />
                                 <Text text="{vm>timestamp}" />
                                 <Button icon="sap-icon://delete" press=".onDeleteDefect" />
                             </cells>
@@ -202,6 +309,7 @@
         <footer>
             <OverflowToolbar>
                 <ToolbarSpacer />
+                <Button text="Cancel" type="Reject" icon="sap-icon://decline" press=".onCancel" />
                 <Button text="Submit Inspection Log" type="Accept" icon="sap-icon://accept" press=".onFinalSubmit" />
             </OverflowToolbar>
         </footer>
