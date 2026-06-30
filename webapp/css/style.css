@@ -1,1 +1,95 @@
-/* Enter your custom styles here */
+.sectionBox {
+    padding: 0.5rem;
+}
+
+.sectionTitle {
+    margin-bottom: 0.75rem;
+}
+
+.fieldBlock {
+    margin-bottom: 0.85rem;
+}
+
+/* Auto fetched fields */
+.readOnlyWhiteBox {
+    display: block;
+    width: 100%;
+    height: 2.25rem;
+    line-height: 2.15rem;
+    padding: 0 0.75rem;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    border-radius: 0.25rem;
+    color: #32363a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Editable Input fields */
+.whiteInputBox.sapMInputBase {
+    width: 100%;
+}
+
+.whiteInputBox.sapMInputBase .sapMInputBaseContentWrapper {
+    height: 2.25rem;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+}
+
+.whiteInputBox.sapMInputBase .sapMInputBaseInner {
+    height: 2.15rem;
+    line-height: 2.15rem;
+    padding: 0 0.75rem;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+/* Editable Select fields */
+.whiteSelectBox.sapMSlt {
+    width: 100%;
+    height: 2.25rem;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+}
+
+.whiteSelectBox.sapMSlt .sapMSltLabel {
+    line-height: 2.15rem;
+    padding-left: 0.75rem;
+}
+
+.whiteSelectBox.sapMSlt .sapMSltArrow {
+    height: 2.15rem;
+    line-height: 2.15rem;
+}
+/* Defect quick-capture buttons same size as input/display boxes */
+.defectCaptureButton.sapMBtn {
+    width: 100%;
+    height: 2.25rem;
+    padding: 0;
+}
+
+.defectCaptureButton.sapMBtn .sapMBtnInner {
+    height: 2.25rem;
+    line-height: 2.15rem;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    color: #0a6ed1;
+    text-align: center;
+}
+
+.defectCaptureButton.sapMBtn .sapMBtnContent {
+    line-height: 2.15rem;
+    height: 2.15rem;
+    color: #0a6ed1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

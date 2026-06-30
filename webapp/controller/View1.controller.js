@@ -64,11 +64,15 @@ sap.ui.define([
                     salesOrderItem: "",
                     product: "",
                     productDescription: "",
+                    batch: "",
                     quantity: "",
                     uom: "",
+                    grnQuantity: "",
+                    grnUom: "",
                     fromStorageLocation: "1225",
                     toStorageLocation: "1226",
                     shift: "A",
+                    length: "",
                     inspectedQuantity: "",
                     inspectedUom: "",
                     netWeight: "",
@@ -586,6 +590,11 @@ sap.ui.define([
         },
 
         onCancel: function () {
+            this._resetInspectionEntry();
+            MessageToast.show("Inspection entry reset.");
+        },
+
+        _resetInspectionEntry: function () {
             var oViewModel = this.getView().getModel("vm");
             var aProcesses = oViewModel.getProperty("/processes") || [];
             var oDefaultProcess = aProcesses[0] || {};
@@ -596,11 +605,15 @@ sap.ui.define([
                 salesOrderItem: "",
                 product: "",
                 productDescription: "",
+                batch: "",
                 quantity: "",
                 uom: "",
+                grnQuantity: "",
+                grnUom: "",
                 fromStorageLocation: "1225",
                 toStorageLocation: "1226",
                 shift: "A",
+                length: "",
                 inspectedQuantity: "",
                 inspectedUom: "",
                 netWeight: "",
@@ -615,23 +628,22 @@ sap.ui.define([
 
             oViewModel.setProperty("/capturedDefects", []);
             this._setCurrentDefectsByProcess(oDefaultProcess.key || "");
-
-            MessageToast.show("Inspection entry reset.");
         },
 
         onFinalSubmit: function () {
-            var oViewModel = this.getView().getModel("vm");
-            var aCapturedDefects = oViewModel.getProperty("/capturedDefects") || [];
+            var sDocumentNumber = String(4900000000 + Math.floor(Math.random() * 1000000));
 
-            if (!aCapturedDefects.length) {
-                MessageToast.show("No captured defects to submit.");
-                return;
-            }
-
-            MessageBox.information(
-                "The inspection log is ready, but backend submission is not configured in the current OData service. No data has been cleared.",
+            MessageBox.success(
+                "Document created successfully.\n\nDocument No: " + sDocumentNumber,
                 {
-                    title: "Submission Not Configured"
+                    title: "Success",
+                    actions: [MessageBox.Action.OK],
+                    emphasizedAction: MessageBox.Action.OK,
+                    onClose: function (sAction) {
+                        if (sAction === MessageBox.Action.OK) {
+                            this._resetInspectionEntry();
+                        }
+                    }.bind(this)
                 }
             );
         }

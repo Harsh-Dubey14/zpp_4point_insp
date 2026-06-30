@@ -2,7 +2,6 @@
     controllerName="zpp4pointinsp.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:f="sap.ui.layout.form"
     xmlns:core="sap.ui.core"
     xmlns:l="sap.ui.layout"
 >
@@ -17,257 +16,490 @@
         <content>
             <VBox class="sapUiResponsiveMargin">
 
-                <Panel headerText="Selection Screen" class="customPanel sapUiTinyMarginBottom">
-                    <l:Grid defaultSpan="XL4 L4 M6 S12" hSpacing="1" vSpacing="1">
-                        <f:SimpleForm
-                            editable="true"
-                            layout="ResponsiveGridLayout"
-                            labelSpanXL="5"
-                            labelSpanL="5"
-                            labelSpanM="5"
-                            labelSpanS="12"
-                            emptySpanXL="0"
-                            emptySpanL="0"
-                            emptySpanM="0"
-                            emptySpanS="0"
-                            columnsXL="1"
-                            columnsL="1"
-                            columnsM="1"
-                        >
-                            <f:content>
-                                <Label text="Production Order" design="Bold" />
-                                <Input
-                                    id="prodOrderInput"
-                                    value="{vm>/selection/productionOrder}"
-                                    change=".onProductionOrderChange"
-                                    suggest=".onProductionOrderSuggest"
-                                    suggestionItemSelected=".onProductionOrderSuggestionSelected"
-                                    valueHelpRequest=".onProductionOrderValueHelp"
-                                    showSuggestion="true"
-                                    showValueHelp="true"
-                                    filterSuggests="false"
-                                    startSuggestion="1"
-                                    suggestionRows="{vm>/productionOrders}"
-                                    placeholder="Enter or select Production Order"
-                                    width="100%"
-                                >
-                                    <suggestionColumns>
-                                        <Column><Text text="Production Order" /></Column>
-                                        <Column><Text text="Sales Order" /></Column>
-                                        <Column><Text text="Item" /></Column>
-                                    </suggestionColumns>
-                                    <suggestionRows>
-                                        <ColumnListItem>
-                                            <cells>
-                                                <Text text="{vm>Product_Order}" />
-                                                <Text text="{vm>SalesOrder}" />
-                                                <Text text="{vm>SalesOrderItem}" />
-                                            </cells>
-                                        </ColumnListItem>
-                                    </suggestionRows>
-                                </Input>
+              <Panel
+    headerText="Selection Screen"
+    class="customPanel sapUiTinyMarginBottom"
+>
+    <l:Grid
+        defaultSpan="XL4 L4 M6 S12"
+        hSpacing="1"
+        vSpacing="1"
+        width="100%"
+    >
 
-                               <Label  />
-<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
-    <VBox width="49%">
-        <Label text="Sales Order" design="Bold" />
-        <Input
-            value="{vm>/selection/salesOrder}"
-            editable="false"
-            width="100%"
-        />
-    </VBox>
+        <!-- SECTION 1: Order Details -->
+        <VBox class="sectionBox">
+            <Title
+                text="Order Details"
+                level="H5"
+                class="sectionTitle"
+            />
 
-    <VBox width="49%">
-        <Label text="Sales Order Item" design="Bold" />
-        <Input
-            value="{vm>/selection/salesOrderItem}"
-            editable="false"
-            width="100%"
-        />
-    </VBox>
-</HBox>
-                                <Label text="Product" design="Bold" />
-                                <Input value="{vm>/selection/product}" editable="false" width="100%" />
+            <VBox class="fieldBlock">
+                <Label text="Production Order" design="Bold" />
+                <Input
+                    id="prodOrderInput"
+                    value="{vm>/selection/productionOrder}"
+                    change=".onProductionOrderChange"
+                    suggest=".onProductionOrderSuggest"
+                    suggestionItemSelected=".onProductionOrderSuggestionSelected"
+                    valueHelpRequest=".onProductionOrderValueHelp"
+                    showSuggestion="true"
+                    showValueHelp="true"
+                    filterSuggests="false"
+                    startSuggestion="1"
+                    suggestionRows="{vm>/productionOrders}"
+                    placeholder="Enter or select Production Order"
+                    width="100%"
+                    class="whiteInputBox"
+                >
+                    <suggestionColumns>
+                        <Column>
+                            <Text text="Production Order" />
+                        </Column>
+                        <Column>
+                            <Text text="Sales Order" />
+                        </Column>
+                        <Column>
+                            <Text text="Item" />
+                        </Column>
+                        <Column>
+                            <Text text="Batch" />
+                        </Column>
+                    </suggestionColumns>
 
-                                <!-- <Label text="Product Description" design="Bold" />
-                                <Input value="{vm>/selection/productDescription}" editable="false" width="100%" /> -->
+                    <suggestionRows>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{vm>Product_Order}" />
+                                <Text text="{vm>SalesOrder}" />
+                                <Text text="{vm>SalesOrderItem}" />
+                                <Text text="{vm>Batch}" />
+                            </cells>
+                        </ColumnListItem>
+                    </suggestionRows>
+                </Input>
+            </VBox>
 
-                               <Label  />
-<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
-    <VBox width="49%">
-        <Label text="Quantity" design="Bold" />
-        <Input
-            value="{vm>/selection/quantity}"
-            editable="false"
-            width="100%"
-        />
-    </VBox>
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+                class="fieldBlock"
+            >
+                <VBox width="49%">
+                    <Label text="Sales Order" design="Bold" />
+                    <Text
+                        text="{vm>/selection/salesOrder}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched Sales Order"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
 
-    <VBox width="49%">
-        <Label text="UOM" design="Bold" />
-        <Input
-            value="{vm>/selection/uom}"
-            editable="false"
-            width="100%"
-        />
-    </VBox>
-</HBox>
-                                <Label  />
-<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
-    <VBox width="49%">
-        <Label text="From Storage Location" design="Bold" />
-        <Input
-            value="{vm>/selection/fromStorageLocation}"
-            editable="false"
-            width="100%"
-        />
-    </VBox>
+                <VBox width="49%">
+                    <Label text="Sales Order Item" design="Bold" />
+                    <Text
+                        text="{vm>/selection/salesOrderItem}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched Item"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+            </HBox>
 
-    <VBox width="49%">
-        <Label text="To Storage Location" design="Bold" />
-        <Select
-            selectedKey="{vm>/selection/toStorageLocation}"
-            items="{vm>/storageLocations}"
-            width="100%"
-        >
-            <core:Item key="{vm>key}" text="{vm>text}" />
-        </Select>
-    </VBox>
-</HBox>
-
-                                <Label  />
-<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
-    <VBox width="49%">
-        <Label text="Shift" design="Bold" />
-        <Select
-            selectedKey="{vm>/selection/shift}"
-            items="{vm>/shifts}"
-            width="100%"
-        >
-            <core:Item key="{vm>key}" text="{vm>text}" />
-        </Select>
-    </VBox>
-</HBox>
-
-                                <Label  />
-<HBox width="100%" alignItems="Start" justifyContent="SpaceBetween">
-    <VBox width="49%">
-        <Label text="Inspected Qty" design="Bold" />
-        <Input
-            value="{vm>/selection/inspectedQuantity}"
-            type="Number"
-            placeholder="Enter Quantity"
-            width="100%"
-        />
-    </VBox>
-
-    <VBox width="49%">
-        <Label text="Inspected UOM" design="Bold" />
-        <Input
-            value="{vm>/selection/inspectedUom}"
-            placeholder="Enter UOM"
-            width="100%"
-        />
-    </VBox>
-</HBox>
-                            </f:content>
-                        </f:SimpleForm>
-
-                        <f:SimpleForm
-                            editable="true"
-                            layout="ResponsiveGridLayout"
-                            labelSpanXL="4"
-                            labelSpanL="4"
-                            labelSpanM="4"
-                            labelSpanS="12"
-                            emptySpanXL="0"
-                            emptySpanL="0"
-                            emptySpanM="0"
-                            emptySpanS="0"
-                            columnsXL="1"
-                            columnsL="1"
-                            columnsM="1"
-                        >
-                            <f:content>
-                                <Label text="N.WT" design="Bold" />
-                                <Input value="{vm>/selection/netWeight}" type="Number" editable="false" placeholder="Calculated Net Weight" width="100%" />
-
-                                <Label text="G.WT" design="Bold" />
-                                <Input value="{vm>/selection/grossWeight}" type="Number" placeholder="Enter Gross Weight" liveChange=".onWeightChange" change=".onWeightChange" width="100%" />
-
-                                <Label text="T.WT" design="Bold" />
-                                <Input value="{vm>/selection/tareWeight}" type="Number" placeholder="Enter Tare Weight" liveChange=".onWeightChange" change=".onWeightChange" width="100%" />
-                            </f:content>
-                        </f:SimpleForm>
-
-                        <f:SimpleForm
-                            editable="true"
-                            layout="ResponsiveGridLayout"
-                            labelSpanXL="5"
-                            labelSpanL="5"
-                            labelSpanM="5"
-                            labelSpanS="12"
-                            emptySpanXL="0"
-                            emptySpanL="0"
-                            emptySpanM="0"
-                            emptySpanS="0"
-                            columnsXL="1"
-                            columnsL="1"
-                            columnsM="1"
-                        >
-                            <f:content>
-                                <Label text="Process" design="Bold" />
-                                <Select
-                                    selectedKey="{vm>/selection/process}"
-                                    items="{vm>/processes}"
-                                    change=".onProcessChange"
-                                    width="100%"
-                                >
-                                    <core:Item key="{vm>key}" text="{vm>text}" />
-                                </Select>
-
-                                <Label text="Meter Reading" design="Bold" />
-                                <Input
-                                    value="{vm>/selection/meterReading}"
-                                    placeholder="Enter Current Meter Reading"
-                                    type="Number"
-                                    submit=".onMeterReadingSubmit"
-                                    width="100%"
-                                />
-
-                                <Label text="Operator" design="Bold" />
-                                <Select
-                                    selectedKey="{vm>/selection/operator}"
-                                    items="{vm>/operators}"
-                                    width="100%"
-                                >
-                                    <core:Item key="{vm>key}" text="{vm>text}" />
-                                </Select>
-
-                                <Label text="Machine Name" design="Bold" />
-                                <Select
-                                    selectedKey="{vm>/selection/machineName}"
-                                    items="{vm>/machines}"
-                                    width="100%"
-                                >
-                                    <core:Item key="{vm>key}" text="{vm>text}" />
-                                </Select>
-                            </f:content>
-                        </f:SimpleForm>
-                    </l:Grid>
-                </Panel>
-
-                <Panel headerText="Defect Quick-Capture (Click button to record)" class="customPanel sapUiTinyMarginBottom">
-                    <l:Grid defaultSpan="XL3 L3 M4 S12" content="{vm>/currentDefects}">
-                        <Button
-                            text="{vm>name}"
-                            press=".onDefectClick"
-                            width="100%"
+            <VBox class="fieldBlock">
+                <Label text="Product" design="Bold" />
+                <Text
+                    text="{vm>/selection/product}"
+                    width="100%"
+                    class="readOnlyWhiteBox"
+                >
+                    <customData>
+                        <core:CustomData
+                            key="placeholder"
+                            value="Auto fetched Product"
+                            writeToDom="true"
                         />
-                    </l:Grid>
-                </Panel>
+                    </customData>
+                </Text>
+            </VBox>
 
+            <VBox class="fieldBlock">
+                <Label text="Batch" design="Bold" />
+                <Text
+                    text="{vm>/selection/batch}"
+                    width="100%"
+                    class="readOnlyWhiteBox"
+                >
+                    <customData>
+                        <core:CustomData
+                            key="placeholder"
+                            value="Auto fetched Batch"
+                            writeToDom="true"
+                        />
+                    </customData>
+                </Text>
+            </VBox>
+
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+                class="fieldBlock"
+            >
+                <VBox width="49%">
+                    <Label text="Quantity" design="Bold" />
+                    <Text
+                        text="{vm>/selection/quantity}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched Qty"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+
+                <VBox width="49%">
+                    <Label text="UOM" design="Bold" />
+                    <Text
+                        text="{vm>/selection/uom}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched UOM"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- SECTION 2: Inspection Details -->
+        <VBox class="sectionBox">
+            <Title
+                text="Inspection Details"
+                level="H5"
+                class="sectionTitle"
+            />
+
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+                class="fieldBlock"
+            >
+                <VBox width="49%">
+                    <Label text="GRN Quantity" design="Bold" />
+                    <Text
+                        text="{vm>/selection/grnQuantity}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched GRN Qty"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+
+                <VBox width="49%">
+                    <Label text="GRN UOM" design="Bold" />
+                    <Text
+                        text="{vm>/selection/grnUom}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched GRN UOM"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+            </HBox>
+
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+                class="fieldBlock"
+            >
+                <VBox width="49%">
+                    <Label text="From Storage Location" design="Bold" />
+                    <Text
+                        text="{vm>/selection/fromStorageLocation}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched From Store"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+
+                <VBox width="49%">
+                    <Label text="To Storage Location" design="Bold" />
+                    <Select
+                        selectedKey="{vm>/selection/toStorageLocation}"
+                        items="{vm>/storageLocations}"
+                        width="100%"
+                        class="whiteSelectBox"
+                    >
+                        <core:Item
+                            key="{vm>key}"
+                            text="{vm>text}"
+                        />
+                    </Select>
+                </VBox>
+            </HBox>
+
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+                class="fieldBlock"
+            >
+                <VBox width="49%">
+                    <Label text="Shift" design="Bold" />
+                    <Select
+                        selectedKey="{vm>/selection/shift}"
+                        items="{vm>/shifts}"
+                        width="100%"
+                        class="whiteSelectBox"
+                    >
+                        <core:Item
+                            key="{vm>key}"
+                            text="{vm>text}"
+                        />
+                    </Select>
+                </VBox>
+
+                <VBox width="49%">
+                    <Label text="Length" design="Bold" />
+                    <Input
+                        value="{vm>/selection/length}"
+                        type="Number"
+                        placeholder="Enter Length"
+                        width="100%"
+                        class="whiteInputBox"
+                    />
+                </VBox>
+            </HBox>
+
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+                class="fieldBlock"
+            >
+                <VBox width="49%">
+                    <Label text="Inspected Qty" design="Bold" />
+                    <Text
+                        text="{vm>/selection/inspectedQuantity}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto calculated Qty"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+
+                <VBox width="49%">
+                    <Label text="Inspected UOM" design="Bold" />
+                    <Text
+                        text="{vm>/selection/inspectedUom}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto fetched UOM"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+            </HBox>
+
+            <HBox
+                width="100%"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+                class="fieldBlock"
+            >
+                <VBox width="32%">
+                    <Label text="G.WT" design="Bold" />
+                    <Input
+                        value="{vm>/selection/grossWeight}"
+                        type="Number"
+                        placeholder="Enter Gross"
+                        liveChange=".onWeightChange"
+                        change=".onWeightChange"
+                        width="100%"
+                        class="whiteInputBox"
+                    />
+                </VBox>
+
+                <VBox width="32%">
+                    <Label text="T.WT" design="Bold" />
+                    <Input
+                        value="{vm>/selection/tareWeight}"
+                        type="Number"
+                        placeholder="Enter Tare"
+                        liveChange=".onWeightChange"
+                        change=".onWeightChange"
+                        width="100%"
+                        class="whiteInputBox"
+                    />
+                </VBox>
+
+                <VBox width="32%">
+                    <Label text="N.WT" design="Bold" />
+                    <Text
+                        text="{vm>/selection/netWeight}"
+                        width="100%"
+                        class="readOnlyWhiteBox"
+                    >
+                        <customData>
+                            <core:CustomData
+                                key="placeholder"
+                                value="Auto calculated Net"
+                                writeToDom="true"
+                            />
+                        </customData>
+                    </Text>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- SECTION 3: Defect Entry Details -->
+        <VBox class="sectionBox">
+            <Title
+                text="Defect Entry Details"
+                level="H5"
+                class="sectionTitle"
+            />
+
+            <VBox class="fieldBlock">
+                <Label text="Process" design="Bold" />
+                <Select
+                    selectedKey="{vm>/selection/process}"
+                    items="{vm>/processes}"
+                    change=".onProcessChange"
+                    width="100%"
+                    class="whiteSelectBox"
+                >
+                    <core:Item
+                        key="{vm>key}"
+                        text="{vm>text}"
+                    />
+                </Select>
+            </VBox>
+
+            <VBox class="fieldBlock">
+                <Label text="Meter Reading" design="Bold" />
+                <Input
+                    value="{vm>/selection/meterReading}"
+                    placeholder="Enter Meter Reading"
+                    type="Number"
+                    submit=".onMeterReadingSubmit"
+                    width="100%"
+                    class="whiteInputBox"
+                />
+            </VBox>
+
+            <VBox class="fieldBlock">
+                <Label text="Operator" design="Bold" />
+                <Select
+                    selectedKey="{vm>/selection/operator}"
+                    items="{vm>/operators}"
+                    width="100%"
+                    class="whiteSelectBox"
+                >
+                    <core:Item
+                        key="{vm>key}"
+                        text="{vm>text}"
+                    />
+                </Select>
+            </VBox>
+
+            <VBox class="fieldBlock">
+                <Label text="Machine Name" design="Bold" />
+                <Select
+                    selectedKey="{vm>/selection/machineName}"
+                    items="{vm>/machines}"
+                    width="100%"
+                    class="whiteSelectBox"
+                >
+                    <core:Item
+                        key="{vm>key}"
+                        text="{vm>text}"
+                    />
+                </Select>
+            </VBox>
+        </VBox>
+
+    </l:Grid>
+</Panel>
+
+              <Panel
+    headerText="Defect Quick-Capture (Click button to record)"
+    class="customPanel sapUiTinyMarginBottom"
+>
+    <l:Grid
+        defaultSpan="XL3 L3 M4 S12"
+        hSpacing="1"
+        vSpacing="1"
+        width="100%"
+        content="{vm>/currentDefects}"
+    >
+        <Button
+            text="{vm>name}"
+            press=".onDefectClick"
+            width="100%"
+            class="defectCaptureButton"
+        />
+    </l:Grid>
+</Panel>
                 <Table
                     id="defectsTable"
                     items="{vm>/capturedDefects}"
@@ -275,29 +507,54 @@
                     noDataText="No defects captured yet."
                 >
                     <columns>
-                      <!-- <Column><Text text="Roll No" /></Column> -->
-                        <Column><Text text="Operator" /></Column>
-                          <Column><Text text="Machine Name" /></Column>
-                            <!-- <Column><Text text="Batch No" /></Column> -->
-                        <Column><Text text="Defect Name" /></Column>
-                        <Column><Text text="Meter Reading" /></Column>
-                        <Column><Text text="Process" /></Column>
-                        <Column><Text text="Time" /></Column>
-                        <Column hAlign="Center"><Text text="Delete" /></Column>
+                        <Column>
+                            <Text text="Operator" />
+                        </Column>
+
+                        <Column>
+                            <Text text="Machine Name" />
+                        </Column>
+
+                        <Column>
+                            <Text text="Defect Name" />
+                        </Column>
+
+                        <Column>
+                            <Text text="Meter Reading" />
+                        </Column>
+
+                        <Column>
+                            <Text text="Process" />
+                        </Column>
+
+                        <Column>
+                            <Text text="Time" />
+                        </Column>
+
+                        <Column hAlign="Center">
+                            <Text text="Delete" />
+                        </Column>
                     </columns>
 
                     <items>
                         <ColumnListItem>
                             <cells>
-                                <!-- <ObjectIdentifier title="{vm>rollNo}" /> -->
                                 <Text text="{vm>operator}" />
+
                                 <Text text="{vm>machineName}" />
-                                <!-- <Text text="{vm>batchNo}" /> -->
+
                                 <ObjectIdentifier title="{vm>defectName}" />
+
                                 <Text text="{vm>meterReading} m" />
+
                                 <Text text="{vm>processName}" />
+
                                 <Text text="{vm>timestamp}" />
-                                <Button icon="sap-icon://delete" press=".onDeleteDefect" />
+
+                                <Button
+                                    icon="sap-icon://delete"
+                                    press=".onDeleteDefect"
+                                />
                             </cells>
                         </ColumnListItem>
                     </items>
@@ -309,8 +566,20 @@
         <footer>
             <OverflowToolbar>
                 <ToolbarSpacer />
-                <Button text="Cancel" type="Reject" icon="sap-icon://decline" press=".onCancel" />
-                <Button text="Submit Inspection Log" type="Accept" icon="sap-icon://accept" press=".onFinalSubmit" />
+
+                <Button
+                    text="Cancel"
+                    type="Reject"
+                    icon="sap-icon://decline"
+                    press=".onCancel"
+                />
+
+                <Button
+                    text="Submit Inspection Log"
+                    type="Accept"
+                    icon="sap-icon://accept"
+                    press=".onFinalSubmit"
+                />
             </OverflowToolbar>
         </footer>
     </Page>
